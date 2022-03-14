@@ -34,6 +34,9 @@
     <!-- Tabler Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@1.41.2/iconfont/tabler-icons.min.css">
 
+    <!-- Weather Icons-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css" rel="stylesheet">
+
     <script type="text/javascript" src="js/ibo_icon.js"></script>
 
     <script>
@@ -48,12 +51,16 @@
 
         function generate() {
             document.getElementById("icon").innerHTML = '';
+            isotype_url = document.getElementById('isotypeImage').src;
+            isotype_url = isotype_url.startsWith('blob:') ? isotype_url : null;
             let icon = new IBO_ICON({
                 'font_color': document.getElementById('iconFontColor').value,
                 'font_family': document.getElementById('iconSet').value,
                 'icon_background': document.getElementById('iconBackgroundColor').value,
                 'icon_class': document.getElementById('iconClass').value,
                 'odoo_version': document.getElementById('odooVersion').value,
+                'font_size': document.getElementById('fontSize').value,
+                'isotype_url': isotype_url,
             });
             icon.draw("icon");
         }
@@ -80,10 +87,20 @@
                 case "tabler-icons":
                     document.getElementById('iconSetWebsite').href = "https://tabler-icons.io/"
                     break;
+                case "weathericons":
+                    document.getElementById('iconSetWebsite').href = "http://erikflowers.github.io/weather-icons/"
+                    break;
                 default:
                     document.getElementById('iconSetWebsite').href = "https://fontawesome.com/icons?d=gallery&p=2&s=solid&m=free"
                     break;
             }
+        }
+
+        function onchangeIsotype() {
+          var [file] = document.getElementById("isotypeFile").files;
+          if (file) {
+            document.getElementById("isotypeImage").src = URL.createObjectURL(file);
+          }
         }
 
     </script>
@@ -100,6 +117,7 @@
         <span style="font-family: 'simple-line-icons', Arial, sans-serif;"></span>
         <span style="font-family: 'remixicon', Arial, sans-serif;"></span>
         <span style="font-family: 'tabler-icons', Arial, sans-serif;"></span>
+        <span style="font-family: 'weathericons', Arial, sans-serif;"></span>
     </div>
 
     <header class="container">
@@ -119,6 +137,7 @@
                     </div>
                     <div class="column">
                         <select id="odooVersion">
+                            <option value="15.0">Odoo 15</option>
                             <option value="14.0">Odoo 14</option>
                             <option value="13.0">Odoo 13</option>
                             <option value="12.0">Odoo 12</option>
@@ -140,6 +159,7 @@
                             <option value="simple-line-icons">Simple Line Icons</option>
                             <option value="remixicon">Remix Icon</option>
                             <option value="tabler-icons">Tabler Icons</option>
+                            <option value="weathericons">Weather Icons</option>
                         </select>
                     </div>
 
@@ -155,7 +175,7 @@
                         <label for="iconClass">Icon Class</label><i id="icon-preview"></i>
                     </div>
                     <div class="column">
-                        <input id="iconClass" type="text" placeholder="eg. fas fa-address-card">
+                        <input id="iconClass" type="text" placeholder="e.g. fas fa-address-card">
                     </div>
                 </div>
 
@@ -170,11 +190,29 @@
 
                 <div class="row">
                     <div class="column column-center">
+                        <label for="fontSize">Font Size</label>
+                    </div>
+                    <div class="column">
+                        <input id="fontSize" type="range" min="50" max="300" value="150">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="column column-center">
                         <label for="iconBackgroundColor">Icon Background Color</label>
                     </div>
                     <div class="column">
                         <input type="color" onchange="clickColor(0, -1, -1, 5)" value="#9b4dca"
                             id="iconBackgroundColor">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="column">
+                        <label for="isotypeFile">IsoType Image</label>
+                    </div>
+                    <div class="column" style="display:grid;">
+                        <input type="file" id="isotypeFile" name="isotypeFile" accept="image/png, image/jpeg" onchange="onchangeIsotype()">
                     </div>
                 </div>
 
@@ -195,7 +233,7 @@
             <div class="column align-center">
                 <div id="icon"></div>
             </div>
-
+            <img id="isotypeImage" src="#" alt="Isotype Image" style="display: none;"/>
         </div>
     </div>
 
@@ -220,6 +258,7 @@
                     <li><a href="https://simplelineicons.github.io/">Simple Line Icons</a></li>
                     <li><a href="https://remixicon.com/">Remix Icon</a></li>
                     <li><a href="https://tabler-icons.io/">Tabler Icons</a></li>
+                    <li><a href="http://erikflowers.github.io/weather-icons/">Weather Icons</a></li>
                 </ul>
                 </p>
             </div>
@@ -298,45 +337,50 @@ icon.draw("icon");
                     <tbody>
                         <tr>
                             <td>font_color</td>
-                            <td>eg. "#ffffff"</td>
+                            <td>e.g. "#ffffff"</td>
                             <td>Hex color value for the text or symbol.</td>
                         </tr>
                         <tr>
                             <td>font_family</td>
-                            <td>eg. "Font Awesome 5 Free"</td>
+                            <td>e.g. "Font Awesome 5 Free"</td>
                             <td>Font family for your text or symbol. Make sure the family is added to your page!</td>
                         </tr>
                         <tr>
                             <td>font_weight</td>
-                            <td>eg. "900"</td>
+                            <td>e.g. "900"</td>
                             <td>Font weight for your text or symbol.</td>
                         </tr>
                         <tr>
                             <td>icon_background</td>
-                            <td>eg. "#9b4dca"</td>
+                            <td>e.g. "#9b4dca"</td>
                             <td>Hex color value for the background of your icon.</td>
                         </tr>
                         <tr>
                             <td>icon_class</td>
-                            <td>eg. "fas fa-address-card"</td>
+                            <td>e.g. "fas fa-address-card"</td>
                             <td>CSS class name of your symbol for the icon, the class will automatically try to finde
                                 the corresponding unicode. If an unicode (parameter "icon_text") is set the class will be ignored.</td>
                         </tr>
                         <tr>
                             <td>icon_text</td>
-                            <td>eg. "Test"</td>
+                            <td>e.g. "Test"</td>
                             <td>The text or symbol which should be displayed on the icon. Will be preferred over the
                                 parameter "icon_class" if set.</td>
                         </tr>
                         <tr>
                             <td>icon_width</td>
-                            <td>eg. "300"</td>
+                            <td>e.g. "300"</td>
                             <td>The width of your icon (in px), will also be the height of your icon.</td>
                         </tr>
                         <tr>
                             <td>odoo_version</td>
-                            <td>["11.0", "12.0", "13.0", "14.0"]</td>
+                            <td>["11.0", "12.0", "13.0", "14.0", "15.0"]</td>
                             <td>The odoo version for which the icon should be generated.</td>
+                        </tr>
+                        <tr>
+                            <td>isotype_url</td>
+                            <td>e.g. "https://www.md.org/img.png"</td>
+                            <td>URL of the IsoType image.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -351,12 +395,12 @@ icon.draw("icon");
         <div class="row">
             <div class="column column-50">
                 <p>
-                    Created with <i class="fas fa-heart"></i> by <a href="https://github.com/spilymp">spilymp</a>.
+                    Created with <i class="fas fa-heart"></i> by <a href="https://github.com/spilymp">spilymp</a> and modified by <a href="https://moduon.team">Moduon Team</a>.
                 </p>
             </div>
             <div class="column column-50 align-right">
                 <p>
-                    View Source Code on <a href="https://github.com/spilymp/ibo"><i class="fab fa-github"></i></a>
+                    View Original Source Code Project on <a href="https://github.com/spilymp/ibo"><i class="fab fa-github"></i></a>
                 </p>
             </div>
         </div>
