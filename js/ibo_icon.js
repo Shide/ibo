@@ -390,12 +390,14 @@ class IBO_ICON {
       if (this.isotype_url){
           var isotypeImage = new Image();
           isotypeImage.src = this.isotype_url;
+          var ih = isotypeImage.naturalHeight;
+          var iw = isotypeImage.naturalWidth;
           this._ctx.drawImage(
             isotypeImage,
-            this.canvas.width - 80 - 5,
-            this.canvas.height - 80 - 8,
-            80,
-            80,
+            this.canvas.width - 17 - iw,
+            17,
+            iw,
+            ih,
           );
           this._ctx.restore();
       }
